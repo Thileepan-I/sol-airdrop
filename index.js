@@ -16,24 +16,30 @@ const deleteFile = (filepath) => {
  * contianing an array of key/vale pairs
  */
 const csvToJSON = () => {
+  const TokensDropPerSol = 1000; //edit as per need
   const sheet = new Spreadsheet("data/raw.csv");
   const data = sheet.toArr("data/raw.json");
-  const head = ['timestamp','handle','address'];
   const kvData = [];
-  _.forEach(data, (value) => {
-    var result = {};
-    for (var i = 0; i < head.length; i++) {
-      result[head[i]] = value[i].trim();
+
+  _.forEach(data, (row) => {
+    const [type, txhash, blockTimeUnix, blockTime, fee, tokenAccount, changeType, splBalanceChange, preBalancer, postBalancer, tokenAddress, tokenName, symbol, solTransferSource, solTransferDestination, amountSol] = row;
+
+    if (type === 'SolTransfer') {
+      const amount = parseFloat(amountSol) * TokensDropPerSol;
+      const address = solTransferSource;
+
+      kvData.push({ amount, address });
     }
-    kvData.push(result);
   });
+
   const c = kvData.length;
-  deleteFile('data/cleaned.json');
+  // deleteFile('data/cleaned.json');
   fs.appendFile('data/cleaned.json', JSON.stringify(kvData), function (err) {
     if (err) return console.log(err);
     console.log(`Converted ${c} records`);
   });
 };
+
 
 /**
  * Removes all keys that aren't alpha-numeris and 43/44 chars in length
