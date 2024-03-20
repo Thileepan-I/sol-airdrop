@@ -11,7 +11,7 @@
     "validateKeys": "npx run-func index.js removeOffCurveKeys",
     "removeDupes": "npx run-func index.js removeDupesByKey address",
     "bulkTokenCSV": "npx run-func index.js bulkTokenCSV 1 i3o37JrYVVHMbxyfEskW29HDGheUkXcAezo5zQD3bos",
-    "airdrop:test": "npx run-func airdrop.js exeAirdrop 1 boomh1LQnwDnHtKxWTFgxcbdRjPypRSjdwxkAEJkFSH ./data/test.json",
+    "airdrop:test": "npx run-func airdrop.js exeAirdrop ./data/test.json B7sDDrHqFpCt7cR4HZRUKx3QKGi5tkGnAzVp3gBqK9rL",
     "airdrop:danger": "npx run-func airdrop.js exeAirdrop 2 hero5q1kZywaqaQuXidGK3jTMJRrE6zCKagVwphETHP ./data/curved.json",
     "getNFTList": "npx run-func nft-tools.js getNFTList G1p59D3CScwE9r31RNFsGm3q5xZapt6EXHmtHV7Jq5AS MAIN",
     "filterCollection": "npx run-func nft-tools.js filterCollection BoomArmy OG",

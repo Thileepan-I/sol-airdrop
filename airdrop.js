@@ -9,24 +9,31 @@ const { deleteFile } = require('./index')
  * @param {*} amount 
  * @param {*} token 
  */
-const exeAirdrop = (amount, token, file) => {
-  const d = require(file);
+const exeAirdrop = (file,token) => {
+  // Load the JSON file
+  const data = require(file);
+
+  // Initialize an array to store errors
   const errors = [];
-  _.forEach(d,(v, i) => {
-    console.log(`Airdropping ${amount} to ${v.address} at count: ${i}/${d.length} recipients`);
-    // Execute the token transfer here
-    shell.exec(`spl-token transfer ${token} ${amount} ${v.address} --fund-recipient --allow-unfunded-recipient`);
-    // Push any accounts that have errors
-    if (shell.error()) {
-      errors.push(v);
-    }
+
+  // Iterate through each recipient
+  _.forEach(data, (recipient, index) => {
+      console.log(`Airdropping ${recipient.amount} tokens to ${recipient.address} at count: ${index}/${data.length} recipients`);
+      
+      // Execute the token transfer
+      const transferCommand = `spl-token transfer ${token} ${recipient.amount} ${recipient.address} --fund-recipient --allow-unfunded-recipient`;
+      const transferResult = shell.exec(transferCommand);
+
+      // Check for errors and push to the errors array if any
+      if (transferResult.code !== 0) {
+          errors.push(recipient);
+      }
   });
-  // Write the error file - should be [] if none
-  deleteFile('data/errors.json');
-  fs.appendFile('data/errors.json', JSON.stringify(errors), function (err) {
-    if (err) return console.log(err);
-    console.log('Errors');
-  });
+
+  // Write the errors to a file
+  const errorsFilePath = 'data/errors.json';
+  fs.writeFileSync(errorsFilePath, JSON.stringify(errors));
+  console.log('Errors written to:', errorsFilePath);
 };
 
 module.exports = {
